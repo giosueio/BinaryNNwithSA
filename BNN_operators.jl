@@ -1,3 +1,5 @@
+module
+
 using Statistics
 
 function binarize(A)
@@ -29,4 +31,6 @@ end
 function standardize(Input::Matrix)
     Input = (Input .- mean(Input,dims=1)) ./ std(Input, dims=1)
     return Input
+end
+
 end
