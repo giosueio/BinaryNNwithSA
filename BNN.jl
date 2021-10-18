@@ -1,3 +1,5 @@
+module
+
 using Plots, Random, Statistics, BNN_operators
 
 mutable struct Weights
@@ -136,3 +138,5 @@ function predict(X,Weight)
     ŷ = BNN_classifier(X,Weight).ŷ
     return ŷ
 end
+                                                                    
+end                                                                 
