@@ -26,6 +26,11 @@ function binarizing_dot(A::Matrix{Int8},B::Matrix{Int8}) # Dot product is perfor
     return innerprod
 end
 
+function standardize(Input::Matrix)
+    Input = (Input .- mean(Input,dims=1)) ./ std(Input, dims=1)
+    return Input
+end
+
 mutable struct Weights
     W::Matrix
     H::Int
@@ -39,7 +44,7 @@ mutable struct Weights
     end
 end
 
-struct BNN_classifier
+mutable struct BNN_classifier
     ŷ ::Vector{Int}
     class_prob ::Matrix
     function BNN_classifier(X::Matrix, Weight::Weights) # Using new multiplication method
@@ -131,13 +136,14 @@ end
 function convergence_time(energies)
     l = length(energies)
     for i in 1:l
-        if energies[i] == minimum(energies)
-            return i/l
+        if energies[i] - minimum(energies) < 1e-10
+            return i
         end
     end
 end
 
 function train(X::Matrix, y::Vector{Int}, Weight::Weights, T::Vector{Float64}, disp = false)
+    X = standardize(X)
     if disp==true
         println("Initial energy (log cross-entropy of the training set):",energy(X, y, Weight))
     end
@@ -148,34 +154,35 @@ function train(X::Matrix, y::Vector{Int}, Weight::Weights, T::Vector{Float64}, d
     ŷ = BNN_classifier(X,Weight).ŷ
     if disp==true
         println("Final energy (log cross-entropy of the training set):", energies[end])
-        println("Accuracy on the training set: ", train_accuracy[end])
-        println("Convegence to optimum reached at ", convergence_time(energies)*100, "% of iterations")
+        println("Accuracy on the training set: ", round(train_accuracy[end],digits=4))
+        println("Convegence to optimum reached at ", convergence_time(energies), " iterations of Simulated Annealing")
         display(plot(energies, title = "Simulated Annealing", xlabel = "Iterations", ylabel="Cross-Entropy", legend=false))
         display(plot(train_accuracy, xlabel = "Iterations", ylabel="Training Accuracy", legend=false))
     end
     return Weight
 end
 
-function solution_landscape(X, y, Weight)
-    Weight1 = Weight
-    ŷ = BNN_classifier(X, Weight1).ŷ
+function solution_landscape(X, y, Weight₀)
+    X = standardize(X)
+    ŷ = BNN_classifier(X, Weight₀).ŷ
     initial_accuracy = sum(ŷ .== y)/length(y)
     T = []
     proportions = []
-    for seed in 1:500
+    for seed in 1:prod(size(Weight₀.W))
         Random.seed!(seed)
         train_accuracy = []
-        l = length(Weight1.W)
-        for i in 1:floor.(l/5)
+        l = length(Weight₀.W)
+        for i in 1:l
+            Weight = deepcopy(Weight₀)
             if seed == 1
                 push!(proportions, i/l)
             end
             for j in 1:i
-                s = size(Weight1.W)
+                s = size(Weight.W)
                 r₁,r₂ = rand(1:s[1]), rand(1:s[2]) # Random index for each coordinate
-                Weight1.W[r₁,r₂] = - Weight1.W[r₁,r₂]
+                Weight.W[r₁,r₂] = - Weight.W[r₁,r₂]
             end
-            ŷ = BNN_classifier(X, Weight1).ŷ
+            ŷ = BNN_classifier(X, Weight).ŷ
             push!(train_accuracy, sum(ŷ .== y)/length(y))
         end
         push!(T,train_accuracy)
@@ -184,4 +191,50 @@ function solution_landscape(X, y, Weight)
     pushfirst!(T,initial_accuracy)
     pushfirst!(proportions,0)
     display(scatter((proportions, T), title = "Solution Landscape", xlabel = "Proportion of weights changed", ylabel="Training accuracy", legend=false))
+end
+
+function predict(X,Weight)
+    X = standardize(X)
+    ŷ = BNN_classifier(X,Weight).ŷ
+    return ŷ
+end
+
+function test_layer_elements(X,y,H,max_elements)
+    CE = []
+    for seed in 1:10
+        Random.seed!(seed)
+        cross_entropy = []
+        for m in 1:max_elements
+            Ŵ = Weights(X,y,m,H)
+            L = 30
+            T₀ = 10
+            steps = min(200, prod(size(Ŵ.W)))
+            T = cooling(L, steps, T₀)
+            W = train(X, y, Ŵ, T)
+            push!(cross_entropy, energy(X,y,W))
+        end
+        push!(CE, cross_entropy)
+    end
+    CE = mean(CE)
+    display(scatter(CE, xlabel = "Number of elements in each layer", ylabel="Cross-Entropy", legend=false))
+end
+
+function test_number_layers(X,y,max_layers, M)
+    CE = []
+    for seed in 1:10
+        Random.seed!(seed)
+        cross_entropy = []
+        for h in 1:max_layers
+            Ŵ = Weights(X,y,h,M)
+            L = 30
+            T₀ = 10
+            steps = min(200, prod(size(Ŵ.W)))
+            T = cooling(L, steps, T₀)
+            W = train(X, y, Ŵ, T)
+            push!(cross_entropy, energy(X,y,W))
+        end
+        push!(CE, cross_entropy)
+    end
+    CE = mean(CE)
+    display(scatter(CE,xlabel = "Number of layers", ylabel="Cross-Entropy", legend=false))
 end
