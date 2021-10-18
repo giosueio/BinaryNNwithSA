@@ -1,3 +1,5 @@
+module
+
 using BNN, BNN_operators, Plots, Random, Statistics
 
 function solution_landscape(X, y, Weight₀)
@@ -69,4 +71,6 @@ function test_number_layers(X,y,max_layers, M)
     end
     CE = mean(CE)
     display(scatter(CE,xlabel = "Number of layers", ylabel="Cross-Entropy", legend=false))
+end
+                    
 end
