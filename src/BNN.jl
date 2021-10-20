@@ -88,13 +88,13 @@ end
 
 function lin_cooling(a::Float64, steps::Int, T₀::Int) # Linear cooling schedule
     T = []
-    t = T₀
+    t = float(T₀)
     while t >= 0
-        t_a = repeat([t],steps)
-        push!(T,t_a)
+        for s in steps
+            push!(T,t)
+        end
         t -= a
     end
-    T = collect(Iterators.flatten(T))
     return T
 end
                                         
