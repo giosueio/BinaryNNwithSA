@@ -94,7 +94,6 @@ function lin_cooling(a::Int, steps::Int, T₀::Int) # Linear cooling schedule
         push!(T,t)
         t -= a
     end
-    T = []
     return T
 end
                                         
