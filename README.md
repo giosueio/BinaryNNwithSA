@@ -31,8 +31,8 @@ The notebook `Experiments.ipynb` contains tests on two datasets:
 
 Clone the repo, `cd` the project's folder and install the depencies by running on `Julia`
 ```
-julia> activate .
-(BNN) julia> Pkg.instantiate()
+pkg> activate .
+(BNN) pkg> instantiate
 ```
 One can then access the repo's methods by specifying
 
