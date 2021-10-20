@@ -1,7 +1,7 @@
 module BNN
 
 export Weights, BNN_classifier
-export energy, SimulatedAnnealing, cooling, convergence_time, train, BNN_predict, misclass_error
+export energy, SimulatedAnnealing, lin_cooling, exp_cooling, convergence_time, train, BNN_predict, misclass_error
 export binarize, xnor, xnordotproduct, standardize
 
 using Plots, Random, Statistics
