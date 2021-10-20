@@ -90,7 +90,7 @@ function lin_cooling(a::Float64, steps::Int, T₀::Int) # Linear cooling schedul
     T = []
     t = float(T₀)
     while t >= 0
-        for s in steps
+        for s in 1:steps
             push!(T,t)
         end
         t -= a
