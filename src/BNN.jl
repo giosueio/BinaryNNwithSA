@@ -87,7 +87,7 @@ function SimulatedAnnealing(X::Matrix, y::Vector{Int}, Weight::Weights, T::Vecto
 end
 
 function lin_cooling(a::Float64, steps::Int, T₀::Int) # Linear cooling schedule
-    T = []
+    T = Float64[]
     t = float(T₀)
     while t >= 0
         for s in 1:steps
