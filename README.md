@@ -44,4 +44,4 @@ julia> include("BNN_analysis.jl")
 
 
 ## Credits
-The project is done by Giosuè Migliorini ([giosue.migliorini@gmail.com](mailto:giosue.migliorini@gmail.com)) as part of the course [20602 - COMPUTER SCIENCE (ALGORITHMS)](https://didattica.unibocconi.eu/ts/tsn_anteprima.php?cod_ins=20602&anno=2021&IdPag=6164), taught by professors C.Feinauer and F.Pittorino.
+Project by Giosuè Migliorini ([giosue.migliorini@gmail.com](mailto:giosue.migliorini@gmail.com)) as part of the course [20602 - COMPUTER SCIENCE (ALGORITHMS)](https://didattica.unibocconi.eu/ts/tsn_anteprima.php?cod_ins=20602&anno=2021&IdPag=6164), taught by professors C.Feinauer and F.Pittorino.
