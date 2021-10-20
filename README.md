@@ -17,8 +17,8 @@ The two main `Julia` scripts are in `src/`:
 | Function  | Description |
 | ------------- | ------------- |
 | solution_landscape  | Change at random an increasing portion of the weight matrix, see how error on the trainin set changes consequentially  |
-| test_layer_elements  | For a given number of layers H, plot how the error on the training set as more units are added to each layer |
-| test_number_layers  | For a given number of units M per layer, plot how the error on the training set as more layers are added  |
+| test_layer_elements  | For a given number of layers H, plot how the error changes on the training set as more units are added to each layer |
+| test_number_layers  | For a given number of units M per layer, plot how the error changes on the training set as more layers are added  |
 <br />
 
 The notebook `Experiments.ipynb` contains tests on two datasets:
@@ -45,3 +45,4 @@ One can then access the repo's methods by specifying
 
 ## Credits
 Project by Giosuè Migliorini ([giosue.migliorini@gmail.com](mailto:giosue.migliorini@gmail.com)) as part of the course [20602 - COMPUTER SCIENCE (ALGORITHMS)](https://didattica.unibocconi.eu/ts/tsn_anteprima.php?cod_ins=20602&anno=2021&IdPag=6164), taught by professors C.Feinauer and F.Pittorino.
+Reference to relevant literature on the topic can be found in `Algorithms_Project(7).pdf`
