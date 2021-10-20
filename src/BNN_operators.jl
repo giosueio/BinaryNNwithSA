@@ -6,7 +6,7 @@ function xnor(a::Bool,b::Bool)
     return ~(a⊻b)
 end
 
-function binarizing_dot(A::Matrix{Int8},B::Matrix{Int8}) # Dot product is performed converting the arrays to BitArray to save memory
+function xnordotproduct(A::Matrix{Int8},B::Matrix{Int8}) # Dot product is performed converting the arrays to BitArray to save memory
     C = BitArray(A.>0)
     D = BitArray(B.>0)
     rowsx, colsx = size(A)
@@ -28,4 +28,3 @@ function standardize(Input::Matrix)
     Input = (Input .- mean(Input,dims=1)) ./ std(Input, dims=1)
     return Input
 end
-
