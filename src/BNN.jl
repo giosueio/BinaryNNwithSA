@@ -2,7 +2,7 @@ module BNN
 
 export Weights, BNN_classifier
 export energy, SimulatedAnnealing, cooling, convergence_time, train, BNN_predict, misclass_error
-export binarize, xnor, binarizing_dot, standardize
+export binarize, xnor, xnordotproduct, standardize
 
 using Plots, Random, Statistics
 include("BNN_operators.jl")
@@ -35,7 +35,7 @@ mutable struct BNN_classifier
             if i == 1
                 Z = binarize(Z * W[f:t,:])
             else
-                Z = binarizing_dot(Z, W[f:t,:])
+                Z = xnordotproduct(Z, W[f:t,:])
             end
             f = t + 1
         end
@@ -54,12 +54,12 @@ function energy(X::Matrix, y::Vector{Int}, Weight::Weights)
     class_prob = BNN_predictions.class_prob
     energy = 0
     for i in 1:size(y)[1]
-        energy += -log(class_prob[i,:][y[i]]) # y vector has to be encoded st classes are ordered from 1 to K
+        energy += -log(class_prob[i,:][y[i]]) # y vector has to be encoded st classes are ordered from 1 to K for indexing to work
     end  
     return energy
 end
 
-function SimulatedAnnealing(X::Matrix, y::Vector{Int}, Weight::Weights, T::Vector{Float64}) # REMEMBER SPECIFYING T TYPE PROBABLY ::Vector{Float}
+function SimulatedAnnealing(X::Matrix, y::Vector{Int}, Weight::Weights, T::Vector{Float64})
     energies, train_accuracy= [], []
     function Metropolis_Step(Weight,t)
         E₀ = energy(X, y, Weight)
@@ -86,27 +86,29 @@ function SimulatedAnnealing(X::Matrix, y::Vector{Int}, Weight::Weights, T::Vecto
     return Weight, energies, train_accuracy
 end
 
-function cooling(L::Int, steps::Int, T₀::Int, f = "exp"::String)
-    if f == "exp" # Exponential multiplicative cooling schedule
-        a = 0.85
-        T = repeat([T₀*(a^k) for k in 0:(L-1)],inner = steps)
-        return T
-    elseif f == "lin_mult" # Linear multiplicative
-        a = 1.1
-        T = [T₀/(a^k) for k in 0:(L-1)]
-        T = repeat(T,inner = steps)
-        return T
-    elseif f == "lin_add" # Linear additive
-        T = [T₀*(L - k)/L for k in 0:(L-1)]
-        T = repeat(T,inner = steps)
-        return T
+function lin_cooling(a::Int, steps::Int, T₀::Int) # Linear cooling schedule
+    a = 0.2
+    T = []
+    t = T₀
+    while t >= 0
+        t_a = repeat([t_a],steps)
+        push!(T,t)
+        t -= - a
     end
+    T = []
+    return T
+end
+                                        
+function exp_cooling(L::Int, steps::Int, T₀::Int) # Exponential cooling schedule
+    a = 0.85
+    T = repeat([T₀*(a^k) for k in 0:(L-1)],inner = steps)
+    return T
 end
 
 function convergence_time(energies)
     l = length(energies)
     for i in 1:l
-        if energies[i] - minimum(energies) < 1e-10
+        if energies[i] - minimum(energies) < 1e-6
             return i
         end
     end
@@ -125,9 +127,9 @@ function train(X::Matrix, y::Vector{Int}, Weight::Weights, T::Vector{Float64}, d
     if disp==true
         println("Final energy (log cross-entropy of the training set):", energies[end])
         println("Accuracy on the training set: ", round(train_accuracy[end],digits=4))
-        println("Convegence to optimum reached at ", convergence_time(energies), " iterations of Simulated Annealing")
-        display(plot(energies, title = "Simulated Annealing", xlabel = "Iterations", ylabel="Cross-Entropy", legend=false))
-        display(plot(train_accuracy, xlabel = "Iterations", ylabel="Training Accuracy", legend=false))
+        plot(energies, title = "Simulated Annealing", xlabel = "Iterations", ylabel="Cross-Entropy", legend=false, color=:darkblue)
+        display(plot!(twinx(), T, label="Temperature", color=:orange))
+        display(plot(train_accuracy, xlabel = "Iterations", ylabel="Training Accuracy", legend=false, color=:darkblue))
     end
     return Weight
 end
