@@ -37,8 +37,8 @@ julia> activate .
 One can then access the repo's methods by specifying
 
 ```
-julia> using BNN
-julia> include("BNN_analysis.jl") 
+(BNN) julia> using BNN
+(BNN) julia> include("BNN_analysis.jl") 
 
 ```
 
