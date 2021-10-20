@@ -94,6 +94,7 @@ function lin_cooling(a::Float64, steps::Int, T₀::Int) # Linear cooling schedul
         push!(T,t_a)
         t -= a
     end
+    T = collect(Iterators.flatten(T))
     return T
 end
                                         
