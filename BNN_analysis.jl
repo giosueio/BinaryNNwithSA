@@ -42,7 +42,7 @@ function test_layer_elements(X,y,H,max_elements,f = "Training error")
             L = 30
             T₀ = 10
             steps = min(200, prod(size(Ŵ.W)))
-            T = cooling(L, steps, T₀)
+            T = exp_cooling(L, steps, T₀)
             W = train(X, y, Ŵ, T)
             if f == "Cross-entropy"
                 push!(st, energy(X,y,W))
@@ -71,7 +71,7 @@ function test_number_layers(X,y,max_layers, M,f = "Training error")
             L = 30
             T₀ = 10
             steps = min(200, prod(size(Ŵ.W)))
-            T = cooling(L, steps, T₀)
+            T = exp_cooling(L, steps, T₀)
             W = train(X, y, Ŵ, T)
             if f == "Cross-entropy"
                 push!(st, energy(X,y,W))
