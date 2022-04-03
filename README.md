@@ -6,12 +6,12 @@ Using Simulated Annealing (SA) to train multiclass classification feedforward Ne
 The two main `Julia` scripts are in `src/`:
 | Script  | Description |
 | ------------- | ------------- |
-| `BNN.jl`  | Contains structs and functions defining the core of my BNN implementation and of SA optimization procedure  |
-| `BNN_operators.jl`  | Contains some ancillary function I implemented to ease notation & computation |
+| `BNN.jl`  | Contains structs and functions defining the core of the BNN implementation and of SA optimization procedure  |
+| `BNN_operators.jl`  | Contains some ancillary function implemented to ease notation & computation |
 
 <br />
 
-`BNN_analysis.jl` contains some additional functions I used to analyze weight configurations obtained with the algorithm.
+`BNN_analysis.jl` contains some additional functions used to analyze weight configurations obtained with the algorithm.
 <br />
 
 | Function  | Description |
@@ -21,11 +21,9 @@ The two main `Julia` scripts are in `src/`:
 | test_number_layers  | For a given number of units M per layer, plot how the error changes on the training set as more layers are added  |
 <br />
 
-The notebook `Experiments.ipynb` contains tests on two datasets:
+The presentation `Algorithms_Project(7).pdf` presents tests on two datasets:
 - **Breast Cancer Wisconsin** dataset for binary classification
 - **Iris** dataset for multiclass classification
-
-*WARNING: In order to run the experiments an [IJulia](https://github.com/JuliaLang/IJulia.jl) kernel for Jupyter Notebook is required.*
 
 ## Quick start
 
