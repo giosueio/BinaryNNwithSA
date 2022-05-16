@@ -1,5 +1,5 @@
 # Fitting Binary Neural Networks with Simulated Annealing
-Using Simulated Annealing (SA) to train multiclass classification feedforward Neural Networks with weights and activations constrained to +1 and -1, aka Binary Neural Networks (BNNs).
+Using Simulated Annealing (SA) to train multiclass classification feedforward Neural Networks with weights and activations constrained to {-1,1} aka Binary Neural Networks (BNNs).
 
 ## Repository structure
 
